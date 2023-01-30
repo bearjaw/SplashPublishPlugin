@@ -1,8 +1,8 @@
 /**
-*  Splash-plugin for Publish
-*  Copyright (c) John Sundell 2019
-*  MIT license, see LICENSE file for details
-*/
+ *  Splash-plugin for Publish
+ *  Copyright (c) John Sundell 2019
+ *  MIT license, see LICENSE file for details
+ */
 
 import Publish
 import Splash
@@ -13,6 +13,11 @@ public extension Plugin {
         Plugin(name: "Splash") { context in
             context.markdownParser.addModifier(
                 .splashCodeBlocks(withFormat: HTMLOutputFormat(
+                    classPrefix: classPrefix
+                ))
+            )
+            context.markdownParser.addModifier(
+                .splashInlineCode(withFormat: HTMLOutputFormat(
                     classPrefix: classPrefix
                 ))
             )
@@ -38,6 +43,26 @@ public extension Modifier {
 
             let highlighted = highlighter.highlight(String(markdown))
             return "<pre><code>" + highlighted + "\n</code></pre>"
+        }
+    }
+
+    static func splashInlineCode(withFormat format: HTMLOutputFormat = .init()) -> Self {
+        let highlighter = SyntaxHighlighter(format: format)
+
+        return Modifier(target: .inlineCode) { html, markdown in
+            var markdown = markdown.dropFirst("`".count)
+
+            guard !markdown.hasPrefix("no-highlight") else {
+                return html
+            }
+
+            markdown = markdown
+                .drop(while: { !$0.isNewline })
+                .dropFirst()
+                .dropLast("`".count)
+
+            let highlighted = highlighter.highlight(String(markdown))
+            return "<code>" + highlighted + "</code>"
         }
     }
 }
