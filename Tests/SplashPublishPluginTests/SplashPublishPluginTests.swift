@@ -29,7 +29,32 @@ final class SplashPublishPluginTests: XCTestCase {
         """)
     }
 
+    func testInlineMarkdown() {
+        let parser = MarkdownParser(modifiers: [.splashInlineCode()])
+        let html = parser.html(from: """
+        Some text
+        `let int = 7`
+        """)
+
+        XCTAssertEqual(html, """
+        <p>Some text</p><p><code><span class="keyword">let</span> int = <span class="number">7</span></code></p>
+        """)
+    }
+
+    func testInlineMarkdownNoHighlight() {
+        let parser = MarkdownParser(modifiers: [.splashInlineCode()])
+        let html = parser.html(from: """
+        Some text
+        `no-highlight let int = 7`
+        """)
+
+        XCTAssertEqual(html, """
+        <p>Some text</p><p><code>no-highlight let int = 7</code></p>
+        """)
+    }
+
     static var allTests = [
-        ("testHighlightingMarkdown", testHighlightingMarkdown)
+        ("testHighlightingMarkdown", testHighlightingMarkdown,
+         "testInlineMarkdown", testInlineMarkdown )
     ]
 }

@@ -50,16 +50,13 @@ public extension Modifier {
         let highlighter = SyntaxHighlighter(format: format)
 
         return Modifier(target: .inlineCode) { html, markdown in
-            var markdown = markdown.dropFirst("`".count)
+            var markdown = html.dropFirst("<code>".count)
 
             guard !markdown.hasPrefix("no-highlight") else {
                 return html
             }
 
-            markdown = markdown
-                .drop(while: { !$0.isNewline })
-                .dropFirst()
-                .dropLast("`".count)
+            markdown = markdown.dropLast("</code>".count)
 
             let highlighted = highlighter.highlight(String(markdown))
             return "<code>" + highlighted + "</code>"
