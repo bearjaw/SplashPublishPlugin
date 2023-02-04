@@ -53,7 +53,7 @@ public extension Modifier {
             var markdown = html.dropFirst("<code>".count)
 
             guard !markdown.hasPrefix("no-highlight") else {
-                return html
+                return html.replacingOccurrences(of: "no-highlight ", with: "")
             }
 
             markdown = markdown.dropLast("</code>".count)

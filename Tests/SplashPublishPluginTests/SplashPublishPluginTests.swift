@@ -49,7 +49,7 @@ final class SplashPublishPluginTests: XCTestCase {
         """)
 
         XCTAssertEqual(html, """
-        <p>Some text</p><p><code>no-highlight let int = 7</code></p>
+        <p>Some text</p><p><code>let int = 7</code></p>
         """)
     }
 
